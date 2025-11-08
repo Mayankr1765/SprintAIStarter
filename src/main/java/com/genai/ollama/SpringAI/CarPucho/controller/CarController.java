@@ -1,5 +1,6 @@
 package com.genai.ollama.SpringAI.CarPucho.controller;
 
+import com.genai.ollama.SpringAI.CarPucho.Entity.CarResponse;
 import com.genai.ollama.SpringAI.CarPucho.Service.CarQueryService;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Controller;
@@ -22,9 +23,9 @@ public class CarController {
     }
 
     @GetMapping("/chat")
-    public ResponseEntity<String> chat(
+    public ResponseEntity<CarResponse> chat(
             @RequestParam(value = "q" ,required = true ) String q) {
-        String response = carQueryService.chat(q);
+        CarResponse response = carQueryService.chat(q);
         return ResponseEntity.ok(response);
 
     }
