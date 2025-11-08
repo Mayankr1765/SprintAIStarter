@@ -7,4 +7,6 @@ import org.springframework.stereotype.Service;
 public interface CarQueryService {
 
     CarResponse chat(String query);
+
+    CarResponse getQuery(String query , String segment , Integer budget);
 }

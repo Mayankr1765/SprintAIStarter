@@ -3,7 +3,10 @@ package com.genai.ollama.SpringAI.CarPucho.Service;
 import com.genai.ollama.SpringAI.CarPucho.Entity.CarResponse;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 public class CarQueryServiceImpl implements CarQueryService {
@@ -28,10 +31,21 @@ public class CarQueryServiceImpl implements CarQueryService {
         Prompt prompt = new Prompt(query);
         CarResponse carResponse=   chatClient.prompt(prompt).call().entity(CarResponse.class);
         return carResponse;
+    }
 
+    @Override
+    public CarResponse getQuery(String query, String segment, Integer budget) {
+        String finalQueryString = query + "In the {segment}" + "around budget {budget}" + "Please answer it as an Car expert";
+        PromptTemplate promptTemplate = PromptTemplate.builder().template(finalQueryString).build();
 
+        String rendererMessage = promptTemplate.render(Map.of(
+                "segment" ,segment,
+                "budget" , budget
 
+        ));
 
+        Prompt prompt = new Prompt(rendererMessage);
 
+        return chatClient.prompt(prompt).call().entity(CarResponse.class);
     }
 }

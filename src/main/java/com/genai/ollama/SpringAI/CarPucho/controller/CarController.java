@@ -24,8 +24,10 @@ public class CarController {
 
     @GetMapping("/chat")
     public ResponseEntity<CarResponse> chat(
-            @RequestParam(value = "q" ,required = true ) String q) {
-        CarResponse response = carQueryService.chat(q);
+            @RequestParam(value = "query" ,required = true ) String query,
+            @RequestParam(value = "segment" , required = true) String segment,
+            @RequestParam(value = "budget" , required = true) Integer budget) {
+        CarResponse response = carQueryService.getQuery(query,segment,budget);
         return ResponseEntity.ok(response);
 
     }
