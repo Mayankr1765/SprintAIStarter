@@ -13,20 +13,18 @@ import org.springframework.http.ResponseEntity;
 @RequestMapping("/ai")
 public class CarController {
 
-    private ChatClient chatClient;
 
     private CarQueryService carQueryService;
 
-    public CarController(ChatClient.Builder chatClientBuilder , CarQueryService carQueryService){
-        this.chatClient = chatClientBuilder.build();
+    public CarController(CarQueryService carQueryService){
         this.carQueryService = carQueryService;
     }
 
     @GetMapping("/chat")
     public ResponseEntity<CarResponse> chat(
             @RequestParam(value = "query" ,required = true ) String query,
-            @RequestParam(value = "segment" , required = true) String segment,
-            @RequestParam(value = "budget" , required = true) Integer budget) {
+            @RequestParam(value = "segment" , required = false) String segment,
+            @RequestParam(value = "budget" , required = false) Integer budget) {
         CarResponse response = carQueryService.getQuery(query,segment,budget);
         return ResponseEntity.ok(response);
 

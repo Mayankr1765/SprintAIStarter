@@ -1,9 +1,12 @@
 package com.genai.ollama.SpringAI.CarPucho.Service;
 
 import com.genai.ollama.SpringAI.CarPucho.Entity.CarResponse;
+import com.genai.ollama.SpringAI.CarPucho.advisor.TokenAdvisor;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -12,6 +15,9 @@ import java.util.Map;
 public class CarQueryServiceImpl implements CarQueryService {
 
     private ChatClient chatClient;
+
+    @Autowired
+    TokenAdvisor tokenAdvisor;
 
     public CarQueryServiceImpl(ChatClient.Builder chatClientBuilder) {
         this.chatClient = chatClientBuilder.build();
@@ -46,6 +52,10 @@ public class CarQueryServiceImpl implements CarQueryService {
 
         Prompt prompt = new Prompt(rendererMessage);
 
-        return chatClient.prompt(prompt).call().entity(CarResponse.class);
+        return chatClient
+                .prompt(prompt)
+                .advisors(tokenAdvisor)
+                .call()
+                .entity(CarResponse.class);
     }
 }
