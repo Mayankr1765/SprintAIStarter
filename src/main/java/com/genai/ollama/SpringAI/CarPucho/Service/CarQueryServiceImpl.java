@@ -1,6 +1,7 @@
 package com.genai.ollama.SpringAI.CarPucho.Service;
 
 import com.genai.ollama.SpringAI.CarPucho.Entity.CarResponse;
+import com.genai.ollama.SpringAI.CarPucho.Tools.CarDetailsFetcher;
 import com.genai.ollama.SpringAI.CarPucho.advisor.TokenAdvisor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
@@ -18,6 +19,9 @@ public class CarQueryServiceImpl implements CarQueryService {
 
     @Autowired
     TokenAdvisor tokenAdvisor;
+
+    @Autowired
+    CarDetailsFetcher carDetailsFetcher;
 
     public CarQueryServiceImpl(ChatClient.Builder chatClientBuilder) {
         this.chatClient = chatClientBuilder.build();
@@ -41,10 +45,14 @@ public class CarQueryServiceImpl implements CarQueryService {
 
     @Override
     public CarResponse getQuery(String query, String segment, Integer budget) {
-        String finalQueryString = query + "In the {segment}" + "around budget {budget}" + "Please answer it as an Car expert";
+        String carDetails = carDetailsFetcher.fetchCarDetails();
+        String finalQueryString = query + "You have list of available car in json format {carDetails} .In the {segment}" + "around budget {budget}" + "Please answer it as an Car expert with the list of json available in string format and form perfect sentence";
         PromptTemplate promptTemplate = PromptTemplate.builder().template(finalQueryString).build();
 
+
+
         String rendererMessage = promptTemplate.render(Map.of(
+                "carDetails" , carDetails,
                 "segment" ,segment,
                 "budget" , budget
 
